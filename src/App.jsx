@@ -8,9 +8,13 @@ const BODY_FORMATS = ['JSON', 'XML', 'Form Data', 'Text']
 
 function App() {
   const [url, setUrl] = useState('')
-  const [selectedMethod, setSelectedMethod] = useState('GET')
+  const [selectedMethod, setSelectedMethod] = useState('POST')
   const [bodyFormat, setBodyFormat] = useState('JSON')
-  const [bodyContent, setBodyContent] = useState('')
+  const [bodyContent, setBodyContent] = useState(`{
+  "key": "value",
+  "number": 42,
+  "nested": { "example": true }
+}`)
   const [isLoading, setIsLoading] = useState(false)
   const [isEditorReady, setIsEditorReady] = useState(false)
 
