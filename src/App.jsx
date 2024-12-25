@@ -6,6 +6,28 @@ import Editor from '@monaco-editor/react'
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 const BODY_FORMATS = ['JSON', 'XML', 'Form Data', 'Text']
 
+const DEFAULT_BODIES = {
+  JSON: `{
+  "key": "value",
+  "number": 42,
+  "nested": { "example": true }
+}`,
+  XML: `<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <key>value</key>
+  <number>42</number>
+  <nested>
+    <example>true</example>
+  </nested>
+</root>`,
+  'Form Data': `key=value
+number=42
+nested[example]=true`,
+  'Text': `Example request body
+Line 2
+Line 3`
+}
+
 const toastStyles = {
   style: {
     background: 'rgba(17, 25, 40, 0.9)',
@@ -28,11 +50,7 @@ function App() {
   const [url, setUrl] = useState('')
   const [selectedMethod, setSelectedMethod] = useState('POST')
   const [bodyFormat, setBodyFormat] = useState('JSON')
-  const [bodyContent, setBodyContent] = useState(`{
-  "key": "value",
-  "number": 42,
-  "nested": { "example": true }
-}`)
+  const [bodyContent, setBodyContent] = useState(DEFAULT_BODIES.JSON)
   const [isLoading, setIsLoading] = useState(false)
   const [isEditorReady, setIsEditorReady] = useState(false)
 
@@ -114,6 +132,12 @@ function App() {
 
   const showBodyEditor = selectedMethod !== 'GET' && selectedMethod !== 'DELETE'
 
+  const handleFormatChange = (e) => {
+    const newFormat = e.target.value
+    setBodyFormat(newFormat)
+    setBodyContent(DEFAULT_BODIES[newFormat])
+  }
+
   return (
     <div className="min-h-screen p-4 flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
       <motion.div
@@ -186,7 +210,7 @@ function App() {
                     <label className="block text-white mb-2 font-medium">Body Format</label>
                     <select
                       value={bodyFormat}
-                      onChange={(e) => setBodyFormat(e.target.value)}
+                      onChange={handleFormatChange}
                       className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border-gray-700 
                                 text-white font-medium cursor-pointer
                                 focus:ring-2 focus:ring-purple-500 focus:border-transparent
