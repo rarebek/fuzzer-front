@@ -6,6 +6,24 @@ import Editor from '@monaco-editor/react'
 const HTTP_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
 const BODY_FORMATS = ['JSON', 'XML', 'Form Data', 'Text']
 
+const toastStyles = {
+  style: {
+    background: 'rgba(17, 25, 40, 0.9)',
+    backdropFilter: 'blur(16px) saturate(180%)',
+    WebkitBackdropFilter: 'blur(16px) saturate(180%)',
+    color: '#FFF',
+    padding: '20px 24px',
+    borderRadius: '16px',
+    fontSize: '1.2rem',
+    minWidth: '300px',
+    maxWidth: '500px',
+    border: '1px solid rgba(255, 255, 255, 0.125)',
+    boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+  },
+  duration: 4000,
+  position: 'top-right',
+}
+
 function App() {
   const [url, setUrl] = useState('')
   const [selectedMethod, setSelectedMethod] = useState('POST')
@@ -36,51 +54,58 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!url) {
-      toast.error('Please enter a URL', {
-        duration: 4000,
-        style: {
-          background: '#2D3748',
-          color: '#FFF',
-          padding: '16px',
-          borderRadius: '10px',
-          fontSize: '1.1rem',
-          maxWidth: '400px',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-        },
-        icon: '❌',
-      })
+      toast.error(
+        <div className="flex items-center space-x-3">
+          <span className="text-2xl">❌</span>
+          <div>
+            <h3 className="font-bold text-lg">Error</h3>
+            <p>Please enter a URL</p>
+          </div>
+        </div>,
+        {
+          ...toastStyles,
+          icon: false
+        }
+      )
       return
     }
     setIsLoading(true)
-    toast.loading('Testing API...', {
-      style: {
-        background: '#2D3748',
-        color: '#FFF',
-        padding: '16px',
-        borderRadius: '10px',
-        fontSize: '1.1rem',
-        maxWidth: '400px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-      },
-    })
+    toast.loading(
+      <div className="flex items-center space-x-3">
+        <div className="w-6 h-6">
+          <svg className="animate-spin w-full h-full text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 className="font-bold text-lg">Testing API</h3>
+          <p>Please wait...</p>
+        </div>
+      </div>,
+      {
+        ...toastStyles,
+        icon: false
+      }
+    )
     
     await new Promise(resolve => setTimeout(resolve, 1500))
     
     setIsLoading(false)
     toast.dismiss()
-    toast.success('API test completed!', {
-      duration: 4000,
-      style: {
-        background: '#2D3748',
-        color: '#FFF',
-        padding: '16px',
-        borderRadius: '10px',
-        fontSize: '1.1rem',
-        maxWidth: '400px',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-      },
-      icon: '✅',
-    })
+    toast.success(
+      <div className="flex items-center space-x-3">
+        <span className="text-2xl animate-bounce">✅</span>
+        <div>
+          <h3 className="font-bold text-lg">Success</h3>
+          <p>API test completed!</p>
+        </div>
+      </div>,
+      {
+        ...toastStyles,
+        icon: false
+      }
+    )
   }
 
   const handleEditorDidMount = () => {
@@ -275,20 +300,17 @@ function App() {
         position="top-right"
         toastOptions={{
           className: '',
-          style: {
-            background: '#2D3748',
-            color: '#fff',
-          },
+          style: toastStyles.style,
           success: {
             iconTheme: {
               primary: '#10B981',
-              secondary: '#FFFFFF',
+              secondary: 'white',
             },
           },
           error: {
             iconTheme: {
               primary: '#EF4444',
-              secondary: '#FFFFFF',
+              secondary: 'white',
             },
           },
         }}
@@ -296,7 +318,7 @@ function App() {
           top: 40,
           right: 40,
         }}
-        gutter={20}
+        gutter={24}
       />
     </div>
   )
